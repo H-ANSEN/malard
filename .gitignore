@@ -1,0 +1,6 @@
+
+
+# Toolchain for building the kernel
+toolchain/*
+!toolchain/i686-elf-cross-compiler.sh
+
