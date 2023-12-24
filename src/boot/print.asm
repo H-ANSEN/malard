@@ -38,27 +38,34 @@ print_string:
 ; Prints a 16-bit number in hex to the screen using BIOS interrupt 0x10.
 ;
 ; Parameters:
-;     'ax' - the number to print in hex
+;     'ax' - the number to print in hexadecimal format.
 ; *****************************************************************************
 print_hex:
-    pusha              ; push all registers to the stack
-    mov bx, 16         ; divisor for hex conversion
-    mov cx, 1028       ; counter (4 for low and 4 for high nibble of 'cx')
+    pusha                    ; push all registers to the stack
+    mov cx, 0x0404           ; counters for loops (ch=4, cl=4)
 
-    .hex_loop:
-        div bx             ; divide 'ax' by 16 (remainder goes to 'dx')
-        push word dx       ; push remainder to the stack
-        dec cl             ; decrement 'cx' to count down to 0
-        jnz .hex_loop      ; jump to '.done' if 'ax' is zero
+    .push_remainder:
+        mov dx, ax           ; copy register 'ax' to 'dx'
+        and dx, 0x000f       ; mask out the last 4 bits
+        push dx              ; push the remainder to the stack
+        shr ax, 0x4          ; divide by 16
+        dec ch               ; decrement the counter
+        jnz .push_remainder  ; push remainder and divide again
 
-    .hex_print:
-        pop ax             ; pop a hex digit from the stack into 'ax' 
-        add al, 48
-        mov ah, TTY_MODE   ; indicate tty mode as video service
-        int INT_VIDEO
-        dec ch
-        jnz .hex_print
+    .pop_and_print:
+        pop ax               ; pop a hex digit from the stack
+        cmp ax, 0xA          ; is the digit a number or a letter? 
+        jb .is_digit         ; if less than 10, it's a number and we jump
+        add al, '7'          ; otherwise, add 7 to get the correct ASCII letter
+        jmp .print           ; jump to '.print' to print the letter
 
-    .done:
-        popa 
-        ret
+    .is_digit:
+        add al, '0'          ; add 0 to get the correct ASCII number
+
+    .print:
+        mov ah, TTY_MODE     ; indicate tty mode as video service
+        int INT_VIDEO        ; print the character in 'al'
+        dec cl               ; decrement the counter
+        jnz .pop_and_print   ; pop and print the next digit if not zero
+        popa                 ; restore registers from the stack
+        ret                  ; return from function
