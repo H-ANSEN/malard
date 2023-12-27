@@ -1,3 +1,11 @@
+%ifndef __PRINT16_ASM__
+%define __PRINT16_ASM__
+
+;
+; 16-bit real mode functions for printing to the screen.
+;
+[bits 16]
+
 ;
 ; For information on interrupts and there modes see:
 ; https://en.wikipedia.org/wiki/BIOS_interrupt_call#Interrupt_table
@@ -8,13 +16,14 @@
 
 
 ; *****************************************************************************
-; print_string
-; Prints a null-terminated string to the screen using BIOS interrupt 0x10. 
+; print_string_16
+; Prints a null-terminated string to the screen using BIOS interrupt 0x10. This
+; function is meant to only be called from 16-bit real mode.
 ; 
 ; Parameters:
 ;     'bx' - pointer to a null-terminated string to print.
 ; *****************************************************************************
-print_string:
+print_string_16:
     pusha                ; push all registers to the stack
     mov ah, TTY_MODE     ; indicate tty mode as video service 
 
@@ -34,13 +43,14 @@ print_string:
 
 
 ; *****************************************************************************
-; print_hex
-; Prints a 16-bit number in hex to the screen using BIOS interrupt 0x10.
+; print_hex_16
+; Prints a 16-bit number in hex to the screen using BIOS interrupt 0x10. This 
+; function is meant to only be called from 16-bit real mode.
 ;
 ; Parameters:
 ;     'ax' - the number to print in hexadecimal format.
 ; *****************************************************************************
-print_hex:
+print_hex_16:
     pusha                    ; push all registers to the stack
     mov cx, 0x0404           ; counters for loops (ch=4, cl=4)
 
@@ -69,3 +79,5 @@ print_hex:
         jnz .pop_and_print   ; pop and print the next digit if not zero
         popa                 ; restore registers from the stack
         ret                  ; return from function
+
+%endif ; __PRINT16_ASM__
