@@ -1,4 +1,8 @@
 
+# Generated files
+*.bin 
+*.iso 
+*.o
 
 # Toolchain for building the kernel
 toolchain/*
