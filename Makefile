@@ -11,8 +11,8 @@ OBJ = ${C_SOURCES:.c=.o}
 
 all: malard.iso
 
-%.o: %.c ${HEADERS}
-	$(CC) -ffreestanding -c $^ -o $@
+%.o: %.c 
+	$(CC) -ffreestanding -Wall -Wextra -Werror -c $^ -o $@
 
 %.o: %.asm
 	$(AS) $^ -f elf -o $@
@@ -30,7 +30,7 @@ malard.iso: boot.bin kernel.bin
 	cat $^ > malard.iso
 
 clean:
-	rm -rf *.bin *.o src/*.o src/*.bin malard.iso
+	rm -rf *.bin *.o kernel/*.o src/*.bin malard.iso
 
 run: malard.iso
 	qemu-system-x86_64 -fda malard.iso
