@@ -5,8 +5,9 @@ CC = $(TOOLCHAIN_DIR)/$(TOOLCHAIN)-gcc
 LD = $(TOOLCHAIN_DIR)/$(TOOLCHAIN)-ld
 AS = nasm
 
-C_SOURCES = $(wildcard kernel/*.c)
-HEADERS = $(wildcard kernel/*.h)
+SOURCE_DIR = kernel/
+C_SOURCES = $(shell find $(SOURCE_DIR) -name '*.c')
+HEADERS = $(shell find $(SOURCE_DIR) -name '*.h')
 OBJ = ${C_SOURCES:.c=.o}
 
 all: malard.iso
