@@ -49,7 +49,7 @@ struct idt_descriptor_t {
 struct idtr_t {
     uint16_t limit; /* the size of the IDT in bytes minus one */
     uintptr_t base; /* base address of the IDT                */
-} __attribute__((packed)) idtr;
+} __attribute__((packed));
 
 /** per IA-32 dev manual the base address of the IDT should be aligned on an
  * 8-byte boundry to maximize preformance of cache line fills */
