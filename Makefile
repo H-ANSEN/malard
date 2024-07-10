@@ -34,4 +34,6 @@ clean:
 	rm -rf *.bin *.o kernel/*.o src/*.bin malard.iso
 
 run: malard.iso
-	qemu-system-x86_64 -fda malard.iso
+	qemu-system-i386                          \
+		-serial stdio                         \
+	    -fda malard.iso
